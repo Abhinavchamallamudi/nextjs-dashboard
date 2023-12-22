@@ -11,26 +11,49 @@ import {
 import { formatCurrency } from './utils';
 
 export async function fetchRevenue() {
-  // Add noStore() here prevent the response from being cached.
-  // This is equivalent to in fetch(..., {cache: 'no-store'}).
+  // Add noStore() here to prevent the response from being cached.
+  // This is equivalent to fetch(..., {cache: 'no-store'}).
 
   try {
-    // Artificially delay a response for demo purposes.
-    // Don't do this in production :)
+    // Replace the SQL query with a fetch request to the API
+    const response = await fetch("https://api.mfapi.in/mf", { cache: 'no-store' });
 
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
 
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
+    const data = await response.json();
 
-    // console.log('Data fetch completed after 3 seconds.');
-
-    return data.rows;
+    // Assuming you want to return the entire response
+    return data;
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to fetch revenue data.');
+    console.error('API Fetch Error:', error);
+    throw new Error('Failed to fetch revenue data from API.');
   }
 }
+
+
+// export async function fetchRevenue() {
+//   // Add noStore() here prevent the response from being cached.
+//   // This is equivalent to in fetch(..., {cache: 'no-store'}).
+
+//   try {
+//     // Artificially delay a response for demo purposes.
+//     // Don't do this in production :)
+
+//     // console.log('Fetching revenue data...');
+//     // await new Promise((resolve) => setTimeout(resolve, 3000));
+
+//     const data = await sql<Revenue>`SELECT * FROM revenue`;
+
+//     // console.log('Data fetch completed after 3 seconds.');
+
+//     return data.rows;
+//   } catch (error) {
+//     console.error('Database Error:', error);
+//     throw new Error('Failed to fetch revenue data.');
+//   }
+// }
 
 export async function fetchLatestInvoices() {
   try {
